@@ -1,3 +1,5 @@
+#!/usr/bin/env pybricks-micropython
+
 # Import necessary libraries
 from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor
 from pybricks.parameters import Port
