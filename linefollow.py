@@ -16,7 +16,7 @@ black_threshold = 25
 target_reflection = (white_threshold + black_threshold) / 2
 
 speed = 40
-turn_rate_max = 120
+max_turn_rate = 120
 kp = 1.95
 
 def line_follow():
@@ -24,7 +24,7 @@ def line_follow():
         reflection = light_sensor.reflection()
         error = reflection - target_reflection
         steering = -kp * error
-        steering = max(-turn_rate_max, min(turn_rate_max, steering))
+        steering = max(-max_turn_rate, min(max_turn_rate, steering))
         robot.drive(speed, steering)
         wait(20)
 line_follow()
