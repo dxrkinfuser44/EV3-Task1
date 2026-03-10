@@ -4,7 +4,6 @@ from pybricks.ev3devices import Motor, ColorSensor
 from pybricks.parameters import Port
 from pybricks.robotics import DriveBase
 from pybricks.tools import wait
-import math
 
 # Setup
 simulator = 0
@@ -26,64 +25,79 @@ def getBrightness(sensor):
     r, g, b = sensor.rgb()
     return (r + g + b) / 3
 
-def followLineSingleSensor(
-    base_speed=90,
-    kp=1.1,
-    ki=0,
-    kd=1.8,
-    target=35,
-    right_angle_threshold=70,
-    lost_cycles_limit=5,
-    right_recovery_turn_rate=320,
-    right_recovery_speed=15,
-    reacquire_threshold=43,
-    recovery_timeout_ms=900,
-):
+def followLineSingleSensor():
+    # --- Configuration ---
+    # Target is the "edge" of the line (usually halfway between black and white)
+    # On this map, White ~90, Black ~10. Target = 50.
+    TARGET = 50 
+    BASE_SPEED = 80
+    
+    # PID Constants - Lowered KP to prevent the "aggressive" twitching
+    KP = 0.8
+    KI = 0.01
+    KD = 1.2
+    
     integral = 0
     last_error = 0
-    lost_cycles = 0
-    max_turn = 220  # EV3 DriveBase turn-rate is in deg/s, keep this realistic
+    
+    # Search variables
+    lost_count = 0
+    MAX_LOST_CYCLES = 20 # How long to wait before declaring "Lost"
 
     while True:
         brightness = light_sensor.reflection()
 
-        # If the sensor stays bright for a few cycles, we likely passed over a
-        # right-angle corner and temporarily lost the line.
-        if brightness > right_angle_threshold:
-            lost_cycles += 1
+        # Check if we are "Lost" (Seeing pure white for too long)
+        if brightness > 85: 
+            lost_count += 1
         else:
-            lost_cycles = 0
+            lost_count = 0
 
-        if lost_cycles >= lost_cycles_limit:
-            # Commit to a stronger right pivot until the line is seen again.
-            elapsed = 0
-            while elapsed < recovery_timeout_ms:
-                robot.drive(right_recovery_speed, right_recovery_turn_rate)
-                wait(10)
-                elapsed += 10
-                if light_sensor.reflection() <= reacquire_threshold:
-                    break
-
-            # Reset controller state after recovery to avoid derivative spikes.
-            lost_cycles = 0
+        # RECOVERY LOGIC: If lost, do a sweeping search instead of a hard spin
+        if lost_count > MAX_LOST_CYCLES:
+            robot.stop()
+            ev3.speaker.beep(100, 50) # Signal search mode
+            
+            # simple counter-based timer since StopWatch removed
+            start = 0
+            found = False
+            
+            # Pattern: Drive forward slowly then sweep left/right
+            # Since sensor is on the left, we usually find the line by turning left
+            search_phases = [(40, 0, 500), (0, -60, 1000), (0, 120, 2000)]
+            
+            for speed, turn, duration in search_phases:
+                start = 0
+                while start < duration:
+                    robot.drive(speed, turn)
+                    if light_sensor.reflection() < 60: # Found something dark
+                        found = True
+                        break
+                    wait(10)
+                    start += 10
+                if found: break
+            
+            # Reset PID values after finding the line to prevent jumps
             integral = 0
             last_error = 0
+            lost_count = 0
             continue
 
-        error = target - brightness
+        # PID CALCULATION
+        error = TARGET - brightness
         integral += error
-        error_change = error - last_error
-        turn_rate = kp * error + ki * integral + kd * error_change
+        derivative = error - last_error
+        
+        turn_rate = (KP * error) + (KI * integral) + (KD * derivative)
+        
+        # Adaptive Speed: Slow down significantly during sharp turns/spikes
+        # This keeps the sensor from "overshooting" the line
+        current_speed = BASE_SPEED / (1 + abs(error) * 0.02)
 
-        # Clamp turn_rate and cast to int
-        turn_rate = int(max(-max_turn, min(max_turn, turn_rate)))
-
-        # Slow down on large errors, but keep a minimum speed so the robot still
-        # reaches and rotates through sharp corners.
-        speed = max(55, base_speed * math.exp(-0.045 * abs(error)))
-
-        robot.drive(speed, turn_rate)
+        robot.drive(current_speed, turn_rate)
+        
         last_error = error
+        wait(10)
 
 # Start line following
 followLineSingleSensor()

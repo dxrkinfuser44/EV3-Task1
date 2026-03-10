@@ -21,7 +21,7 @@ light_sensor = ColorSensor(Port.S3)
 #    r, g, b = sensor.rgb()
 #    return (r + g + b) / 3
 
-def followLineSingleSensor(base_speed=90, kp=1.5, ki=0, kd=1.5, target=52):
+def followLineSingleSensor(base_speed=90, kp=1, ki=0, kd=1.5, target=45):
     integral = 0
     last_error = 0
     max_turn = 500  # safe limit for turn rate
