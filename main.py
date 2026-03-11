@@ -1,44 +1,47 @@
 #!/usr/bin/env pybricks-micropython
+import random
 from pybricks.hubs import EV3Brick
-from pybricks.ev3devices import Motor, ColorSensor
+from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor
 from pybricks.parameters import Port
 from pybricks.robotics import DriveBase
 from pybricks.tools import wait
-import math
 
+# Initialize the EV3 Brick.
 ev3 = EV3Brick()
-simulator = 0
-if simulator == 1:
-    left_motor = Motor(Port.A)
-    right_motor = Motor(Port.B)
-else:
-    left_motor = Motor(Port.B)
-    right_motor = Motor(Port.C)
-robot = DriveBase(left_motor, right_motor, wheel_diameter=56, axle_track=152)
+
+# Initialize the motors.
+left_motor = Motor(Port.B)
+right_motor = Motor(Port.C)
+
+#Initialise the sensors.
 light_sensor = ColorSensor(Port.S3)
+obstacle_sensor = UltrasonicSensor(Port.S4)
 
-#def getBrightness(sensor):
-#    r, g, b = sensor.rgb()
-#    return (r + g + b) / 3
 
-def followLineSingleSensor(base_speed=90, kp=1.5, ki=0, kd=1.5, target=52):
-    integral = 0
-    last_error = 0
-    max_turn = 500  # safe limit for turn rate
-    while True:
-        brightness = light_sensor.reflection()
-        error = target - brightness
-        integral += error
-        error_change = error - last_error
-        turn_rate = kp * error + ki * integral + kd * error_change
-        turn_rate = int(max(-max_turn, min(max_turn, turn_rate)))
-        speed = base_speed * math.exp(-0.07 * abs(error))
-        robot.drive(speed, turn_rate)
-        last_error = error
+# Initialize the drive base.
+robot = DriveBase(left_motor, right_motor, wheel_diameter=56, axle_track=152)
+robot.settings(straight_speed=200, straight_acceleration=100, turn_rate=100)
 
-#sim error
-#while simulator == 1:
-    #robot.drive (100, 5)
-    #wait(2100)
-    #break
-followLineSingleSensor()
+# Here is where your code starts
+
+
+while True:
+    if obstacle_sensor.distance() < 10:
+        robot.drive(0,80)
+        wait(1000)
+        robot.drive(100,0)
+        wait(2500)
+        robot.drive(0,-70)
+        wait(1000)
+        robot.drive(100,0)
+        wait(3000)
+        robot.drive(0,-70)
+        wait(1000)
+        robot.drive(100,0)
+        wait(3000)
+        robot.drive(0,90)
+        wait(1000)
+    elif light_sensor.reflection() < 50: 
+        robot.drive(60,-50)
+    else: 
+       robot.drive(60,50)

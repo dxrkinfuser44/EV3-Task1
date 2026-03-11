@@ -1,4 +1,3 @@
-
 #!/usr/bin/env pybricks-micropython
 import random
 from pybricks.hubs import EV3Brick

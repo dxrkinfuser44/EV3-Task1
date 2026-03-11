@@ -13,7 +13,7 @@ left_motor = Motor(Port.B)
 right_motor = Motor(Port.C)
 
 #Initialise the sensors.
-#light_sensor = ColorSensor(Port.S1)
+light_sensor = ColorSensor(Port.S3)
 #distance_sensor = UltrasonicSensor(Port.S2)
 
 # var def
@@ -33,4 +33,6 @@ def base():
 
 def findline():
     linefound = 0
-    
+    while linefound == 0:
+        robot.drive(200)
+        if light_sensor.reflection
