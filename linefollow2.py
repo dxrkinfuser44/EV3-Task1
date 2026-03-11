@@ -21,7 +21,7 @@ light_sensor = ColorSensor(Port.S3)
 #    r, g, b = sensor.rgb()
 #    return (r + g + b) / 3
 
-def followLineSingleSensor(base_speed=90, kp=1, ki=0, kd=1.5, target=45):
+def main(base_speed=90, kp=1, ki=0, kd=1.5, target=45):
     integral = 0
     last_error = 0
     max_turn = 500  # safe limit for turn rate
@@ -41,4 +41,4 @@ def followLineSingleSensor(base_speed=90, kp=1, ki=0, kd=1.5, target=45):
     #robot.drive (100, 5)
     #wait(2100)
     #break
-followLineSingleSensor()
+main()

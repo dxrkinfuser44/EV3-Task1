@@ -10,12 +10,12 @@ from pybricks.tools import wait
 ev3 = EV3Brick()
 
 # Initialize the motors.
-left_motor = Motor(Port.A)
-right_motor = Motor(Port.B)
+left_motor = Motor(Port.B)
+right_motor = Motor(Port.C)
 
 #Initialise the sensors.
-light_sensor = ColorSensor(Port.S1)
-obstacle_sensor = UltrasonicSensor(Port.S2)
+light_sensor = ColorSensor(Port.S3)
+obstacle_sensor = UltrasonicSensor(Port.S4)
 
 
 # Initialize the drive base.

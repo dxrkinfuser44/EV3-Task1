@@ -27,21 +27,13 @@ robot.settings(straight_speed=200, straight_acceleration=100, turn_rate=100)
 
 while True:
     if obstacle_sensor.distance() < 10:
-        robot.drive(0,80)
+        robot.drive(100,80)
         wait(1000)
         robot.drive(100,0)
-        wait(2500)
-        robot.drive(0,-70)
         wait(1000)
-        robot.drive(100,0)
-        wait(3000)
-        robot.drive(0,-70)
-        wait(1000)
-        robot.drive(100,0)
-        wait(3000)
-        robot.drive(0,90)
+        robot.drive(100,-80)
         wait(1000)
     elif light_sensor.reflection() < 50: 
-        robot.drive(60,-50)
+        robot.drive(60,-100)
     else: 
-       robot.drive(60,50)
+       robot.drive(60,100)
