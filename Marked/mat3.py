@@ -4,7 +4,7 @@ from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor
 from pybricks.parameters import Port
 from pybricks.robotics import DriveBase
 from pybricks.tools import wait
-
+'''
 ev3 = EV3Brick()
 
 left_motor = Motor(Port.B)
@@ -22,4 +22,4 @@ while True:
         if light_sensor.reflection() > 50:
             robot.drive(60, 50)
         else:
-            robot.drive(70,0)
+            robot.drive(70,0)'''
