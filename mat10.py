@@ -34,11 +34,11 @@ robot.settings(straight_speed=200, straight_acceleration=100, turn_rate=100)
 
 
 while True:
-    if obstacle_sensor.distance() < 5:
+    if obstacle_sensor.distance() < 25:
         robot.stop()
         #robot.drive(100,80)
         #wait(1000)
-        3robot.drive(100,0)
+        #robot.drive(100,0)
         #wait(1000)
         #robot.drive(100,-80)
         #wait(1000)
