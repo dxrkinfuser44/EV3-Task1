@@ -2,7 +2,7 @@
 
 # Import necessary libraries
 from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor
-from pybricks.parameters import Port
+from pybricks.parameters import Port, Color
 from pybricks.robotics import DriveBase
 from pybricks.tools import wait
 

@@ -36,7 +36,7 @@ def main(base_speed=150, kp=1.9, ki=0, kd=1.5, target=45):
         error_change = error - last_error
         turn_rate = kp * error + ki * integral + kd * error_change
         turn_rate = int(max(-max_turn, min(max_turn, turn_rate)))
-        speed = base_speed * math.exp(-0.07 * abs(error))
+        speed = base_speed * math.exp(-0.07 * abs(error)) * -1
         robot.drive(speed, turn_rate)
         last_error = error
 

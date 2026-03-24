@@ -10,7 +10,7 @@ ev3 = EV3Brick()
 left_motor = Motor(Port.B)
 right_motor = Motor(Port.C)
 light_sensor = ColorSensor(Port.S3)
-#distance_sensor = UltrasonicSensor(Port.S4)
+distance_sensor = UltrasonicSensor(Port.S4)
 
 # Initialize the drive base.
 robot = DriveBase(left_motor, right_motor, wheel_diameter=56, axle_track=152)
