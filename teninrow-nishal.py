@@ -1,0 +1,77 @@
+# Import necessary libraries
+from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor
+from pybricks.parameters import Port, Color
+from pybricks.robotics import DriveBase
+from pybricks.tools import wait
+
+# ---------- STANDARD SETUP CODE ---------- #
+
+# Initialize the motors.
+left_motor = Motor(Port.A)
+right_motor = Motor(Port.B)
+
+#Initialise the sensors.
+light_sensor = ColorSensor(Port.S1)
+distance_sensor = UltrasonicSensor(Port.S2)
+
+# Initialize the drive base.
+robot = DriveBase(left_motor, right_motor, wheel_diameter=56, axle_track=152)
+
+# ---------- MAINLINE PROGRAM ---------- #
+
+### Edit beneath this comment ###
+base_speed = 70
+EM = 1.5
+Line_Follow = -50
+C = -1
+
+while True:
+    color = light_sensor.color()
+    r, g, b = light_sensor.rgb()
+    L = (r + g +b)/3
+    if color == Color.GREEN:
+        #Turning (VIA GAMBLING YAYAYAYAY)
+        error = -L - Line_Follow
+        turn_rate = (error * EM)
+
+        speed = base_speed-abs(turn_rate)
+        robot.drive(speed, turn_rate)
+    elif color == Color.BLACK:
+        #robot.drive (100, -90)
+        wait(400)
+        break
+
+    
+
+
+while True:
+    color = light_sensor.color()
+    r, g, b = light_sensor.rgb()
+    L = (r + g +b)/3
+    D = distance_sensor.distance()
+    print(color)
+    if color == Color.GREEN:
+        robot.drive(40, 0)
+        wait(1500)        
+        robot.drive(30, 60)
+        wait(400)
+        robot.stop
+        wait(100)
+    elif color == Color.RED:
+        robot.drive(50,0)
+        wait(900)
+        robot.drive(0, -30)
+        wait(1700)
+    elif D < 150:
+        robot.stop()
+        robot.drive(80, 40)
+        wait(1500)
+        robot.stop()
+    else:
+        #Turning
+        error = -L - Line_Follow
+        turn_rate = (error * EM)
+
+        speed = base_speed - abs(turn_rate)
+        robot.drive(speed, turn_rate)
+   

@@ -14,6 +14,12 @@ ADJUST = 1.2
 THRESHOLD = 40
 SPEED = 80
 TURN_RATE = 1.3
+MAX_DRIVE_SPEED = 120
+MAX_TURN_RATE = 85
+
+
+def clamp(value, lower, upper):
+    return max(lower, min(value, upper))
 
 
 def read_rgb():
@@ -26,14 +32,18 @@ def get_reflection(rgb):
 
 
 def drive_for(duration_ms, drive_speed, drive_turn):
-    robot.drive(drive_speed, drive_turn)
+    robot.drive(
+        clamp(drive_speed, -MAX_DRIVE_SPEED, MAX_DRIVE_SPEED),
+        clamp(drive_turn, -MAX_TURN_RATE, MAX_TURN_RATE),
+    )
     wait(duration_ms)
     robot.stop()
 
 
 def follow_line_step(reflection):
     turn = (reflection - THRESHOLD) * TURN_RATE
-    robot.drive(SPEED - abs(turn * ADJUST), turn)
+    drive_speed = clamp(SPEED - abs(turn * ADJUST), 0, MAX_DRIVE_SPEED)
+    robot.drive(drive_speed, clamp(turn, -MAX_TURN_RATE, MAX_TURN_RATE))
     return turn
 
 
@@ -75,7 +85,8 @@ def run_main_phase():
         turn = reflection - THRESHOLD
         handle_obstacle(distance_sensor.distance())
         handle_color_markers(r, g, b)
-        robot.drive(SPEED - abs(turn * ADJUST), turn)
+        drive_speed = clamp(SPEED - abs(turn * ADJUST), 0, MAX_DRIVE_SPEED)
+        robot.drive(drive_speed, clamp(turn, -MAX_TURN_RATE, MAX_TURN_RATE))
         print(turn)
 
 
