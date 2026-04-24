@@ -21,7 +21,7 @@ robot = DriveBase(left_motor, right_motor, wheel_diameter=56, axle_track=152)
 
 ### Edit beneath this comment ###
 base_speed = 70
-EM = 1.5
+EM = 1.2
 Line_Follow = -50
 C = -1
 
@@ -30,7 +30,7 @@ while True:
     r, g, b = light_sensor.rgb()
     L = (r + g +b)/3
     if color == Color.GREEN:
-        #Turning
+        #Turning (VIA GAMBLING YAYAYAYAY)
         error = -L - Line_Follow
         turn_rate = (error * EM)
 
@@ -68,10 +68,11 @@ while True:
         wait(1500)
         robot.stop()
     else:
-        #Turning
+        #Turning (VIA GAMBLING YAYAYAYAY)
         error = -L - Line_Follow
         turn_rate = (error * EM)
 
         speed = base_speed - abs(turn_rate)
         robot.drive(speed, turn_rate)
+   
    
